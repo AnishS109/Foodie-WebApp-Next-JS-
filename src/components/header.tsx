@@ -38,13 +38,45 @@ const Header_Client = () => {
 
   // ------------------- CHEKING USER LOGGED IN ------------------------
 
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const email = session?.user?.email;
+
+ if (status === 'loading') {
+  return (
+    <AppBar sx={{ position: 'sticky', boxShadow: 1 }}>
+      <Toolbar
+        sx={{
+          background: 'black',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          height: 64,
+          px: 2,
+        }}
+      >
+          {/* ------------------------ LOGO AND TITLE ----------------------- */}
+          <Link href={'/'}>
+            <div className='flex items-center cursor-pointer'>
+              <Image height={70} src={LogoImage} alt='Foodie Logo' />
+
+              <p className='text-xl sm:text-2xl md:text-3xl sm:inline-block text-nowrap font-bold tracking-tight'>
+                <span className='text-yellow-500'>F</span>oodie
+              </p>
+            </div>
+          </Link>
+
+        {/* Simple placeholder for menu / buttons */}
+        <div style={{ width: 500, height: 30, backgroundColor: '#444', borderRadius: 4 }} />
+      </Toolbar>
+    </AppBar>
+  );
+}
+
 
   // ----------------------- HANDLE LOGOUT ---------------------------
 
   const handleLogout = async () => {
-    await signOut({ callbackUrl: '/' }); 
+    await signOut({ callbackUrl: '/' });
   };
 
   // -------------- HIDING HEADER FROM LOGIN AND SIGNUP PAGE ---------------

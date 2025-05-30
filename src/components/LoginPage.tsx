@@ -5,8 +5,20 @@ import Image from 'next/image';
 import GoogleIcon from '@mui/icons-material/Google';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import { useRouter } from 'next/navigation';
-import { signIn } from "next-auth/react";
+import { signIn } from 'next-auth/react';
+import { FormEvent, useState } from 'react';
+import { CircularProgress } from '@mui/material';
 
+interface LoginType {
+  email: string;
+  password: string;
+}
+
+interface modalType {
+  open: boolean;
+  message: string;
+  severity: any;
+}
 
 const LoginPage = () => {
   // ---------------- FOR NAVIGATION ---------------------
@@ -16,7 +28,79 @@ const LoginPage = () => {
   // ------------------ GOOGLE LOGIN BUTTON --------------------
 
   const handleGoogleLogin = async () => {
-    await signIn('google',{ callbackUrl: '/' })
+    await signIn('google', { callbackUrl: '/' });
+  };
+
+  // ------------------------ USE STATES -----------------------
+
+  const [datas, setDatas] = useState<LoginType>({
+    email: '',
+    password: '',
+  });
+  const [messageModal, setMessageModal] = useState<modalType>({
+    open: false,
+    message: '',
+    severity: 'success',
+  });
+  const [load, setLoad] = useState<boolean>(false);
+
+  // ------------------- HANDLE CHANGE -------------------------
+
+  const handleChange = (e: any) => {
+    const { name, value } = e.target;
+    setDatas({ ...datas, [name]: value });
+  };
+
+  // -------------------- HANDLE SUBMIT ------------------------
+
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+
+    if (!datas.email.trim().includes('@gmail.com')) {
+      setMessageModal({
+        open: true,
+        message: 'Enter valid email',
+        severity: 'error',
+      });
+      return;
+    }
+
+    if (!datas.email.trim() || !datas.password.trim()) {
+      setMessageModal({
+        open: true,
+        message: 'All fields are required',
+        severity: 'error',
+      });
+      return;
+    }
+
+    try {
+      setLoad(true)
+      const response = await signIn('credentials', {
+        redirect: false,
+        email: datas.email,
+        password: datas.password,
+      });
+
+      if (response?.ok) {
+        router.push('/');
+        router.refresh();
+      } else {
+        setMessageModal({
+          open: true,
+          message: 'Invalid username or password!',
+          severity: 'error',
+        });
+      }
+    } catch (error) {
+      setMessageModal({
+        open: true,
+        message: 'Server Error! Try again later.',
+        severity: 'error',
+      });
+    } finally {
+      setLoad(false)
+    }
   };
 
   return (
@@ -38,7 +122,10 @@ const LoginPage = () => {
         </div>
 
         {/* Google Login Button */}
-        <button onClick={handleGoogleLogin} className='w-full flex items-center justify-center gap-2 bg-white text-gray-700 border border-gray-300 rounded-lg py-2 hover:shadow-md transition'>
+        <button
+          onClick={handleGoogleLogin}
+          className='w-full flex items-center justify-center gap-2 bg-white text-gray-700 border border-gray-300 rounded-lg py-2 hover:shadow-md transition'
+        >
           <GoogleIcon />
           <span>Continue with Google</span>
         </button>
@@ -52,6 +139,9 @@ const LoginPage = () => {
         {/* Email Input */}
         <input
           type='email'
+          value={datas.email}
+          onChange={handleChange}
+          name='email'
           placeholder='Email'
           className='w-full mb-4 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-black'
         />
@@ -59,14 +149,26 @@ const LoginPage = () => {
         {/* Password Input */}
         <input
           type='password'
+          value={datas.password}
+          onChange={handleChange}
+          name='password'
           placeholder='Password'
           className='w-full mb-6 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-black'
         />
 
         {/* Login Button */}
-        <button className='w-full bg-gray-700 hover:bg-black cursor-pointer text-white font-semibold py-2 rounded-lg transition'>
+        {load ? (
+          <div className='flex justify-center'>
+            <CircularProgress size={35} sx={{color:"black"}}/>
+          </div>
+        ) : (
+        <button 
+        onClick={handleSubmit}
+        className='w-full bg-gray-700 hover:bg-black cursor-pointer text-white font-semibold py-2 rounded-lg transition'>
           Login
         </button>
+        )}
+
 
         <p className='text-center mt-3'>
           Don't have an account?{' '}

@@ -2,7 +2,8 @@ import { DesertImage, FastFoodImage, MainCourseImage } from '@/assets';
 import { ThreeDMarquee } from '@/components/ui/3d-marquee';
 import Carousel from '@/components/ui/carousel';
 import { getCurrentUser } from '@/lib/session';
-import Card from '@/Server_Components/Card';
+import Card from '@/components/Card';
+import { prisma } from '@/lib/prisma';
 
 export default async function Home() {
   // ------------------- 3D MARQUEE IMAGES ------------------
@@ -48,58 +49,64 @@ export default async function Home() {
       src: FastFoodImage,
       title: 'Fast Food Section',
       button: 'Explore',
-      category: 'fast-food',
+      category: 'FastFood',
     },
     {
       src: MainCourseImage,
       title: 'Main Course Section',
       button: 'Explore',
-      category: 'main-course',
+      category: 'MainCourse',
     },
     {
       src: DesertImage,
       title: 'Desert Section',
       button: 'Explore',
-      category: 'desert',
+      category: 'Desert',
     },
   ];
 
   // --------------------- ALL FOOD MAPPING -----------------------
 
-  const data = [
-    {
-      image: '/Assests/burger.jpg',
-      title: 'Juicy Burger',
-    },
-    {
-      image: '/Assests/pizza.jpg',
-      title: 'Pizza',
-    },
-    {
-      image: '/Assests/idli.jpg',
-      title: 'Idli Sambhar',
-    },
-    {
-      image: '/Assests/paneer.jpg',
-      title: 'Shaahi Paneer',
-    },
-    {
-      image: '/Assests/iceCream.jpg',
-      title: 'Ice Cream',
-    },
-    {
-      image: '/Assests/roti.jpg',
-      title: 'Chapati',
-    },
-    {
-      image: '/Assests/sandwich.jpg',
-      title: 'Sandwich',
-    },
-    {
-      image: '/Assests/coffee.jpg',
-      title: 'Cold Coffee',
-    },
-  ];
+  // const  =  = [
+  //   {
+  //     image: '/Assests/burger.jpg',
+  //     title: 'Juicy Burger',
+  //   },
+  //   {
+  //     image: '/Assests/pizza.jpg',
+  //     title: 'Pizza',
+  //   },
+  //   {
+  //     image: '/Assests/idli.jpg',
+  //     title: 'Idli Sambhar',
+  //   },
+  //   {
+  //     image: '/Assests/paneer.jpg',
+  //     title: 'Shaahi Paneer',
+  //   },
+  //   {
+  //     image: '/Assests/iceCream.jpg',
+  //     title: 'Ice Cream',
+  //   },
+  //   {
+  //     image: '/Assests/roti.jpg',
+  //     title: 'Chapati',
+  //   },
+  //   {
+  //     image: '/Assests/sandwich.jpg',
+  //     title: 'Sandwich',
+  //   },
+  //   {
+  //     image: '/Assests/coffee.jpg',
+  //     title: 'Cold Coffee',
+  //   },
+  // ];
+
+  const data = await prisma.fooditem.findMany({
+    orderBy:{
+      price:"desc"
+    }
+  })
 
   return (
     <>
@@ -118,9 +125,16 @@ export default async function Home() {
           Food You'll Love
         </h1>
         <div className='flex gap-10 flex-wrap mx-6 justify-center'>
-          {data.map((item) => (
-            <Card key={item.title} data={item} />
-          ))}
+          {data.map((item) => {
+            const data = {
+              title:item.name,
+              image:item.image,
+              price:item.price
+            }
+            return (
+            <Card key={data.title} data={data} />
+          )
+          })}
         </div>
       </div>
     </>

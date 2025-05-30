@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
   output   = "../src/generated/prisma"
@@ -14,68 +8,30 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id            String          @id @default(cuid())
-  name          String?
-  username      String?         @unique
-  password      String?
-  email         String?         @unique
-  emailVerified DateTime?
-  image         String?
-  accounts      Account[]
-  sessions      Session[]
-  Authenticator Authenticator[]
- 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
- 
-model Account {
-  id                       String  @id @default(cuid())
-  userId                   String  @unique
+model account {
+  id                       String   @id
+  userId                   String   @unique(map: "Account_userId_key")
   type                     String
   provider                 String
   providerAccountId        String
-  refresh_token            String? @db.Text
-  access_token             String? @db.Text
+  refresh_token            String?  @db.Text
+  access_token             String?  @db.Text
   expires_at               Int?
   token_type               String?
   scope                    String?
-  id_token                 String? @db.Text
+  id_token                 String?  @db.Text
   session_state            String?
   refresh_token_expires_in Int?
-  user                     User?   @relation(fields: [userId], references: [id])
- 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
- 
-  @@unique([provider, providerAccountId])
-  @@index([userId])
+  createdAt                DateTime @default(now())
+  updatedAt                DateTime
+  user                     user     @relation(fields: [userId], references: [id], map: "Account_userId_fkey")
+
+  @@unique([provider, providerAccountId], map: "Account_provider_providerAccountId_key")
+  @@index([userId], map: "Account_userId_idx")
 }
- 
-model Session {
-  id           String   @id @default(cuid())
-  sessionToken String   @unique
-  userId       String
-  expires      DateTime
-  user         User     @relation(fields: [userId], references: [id])
- 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
- 
-  @@index([userId])
-}
- 
-model VerificationToken {
-  identifier String
-  token      String
-  expires    DateTime
- 
-  @@unique([identifier, token])
-}
- 
-model Authenticator {
-  credentialID         String  @unique
+
+model authenticator {
+  credentialID         String  @unique(map: "Authenticator_credentialID_key")
   userId               String
   providerAccountId    String
   credentialPublicKey  String
@@ -83,8 +39,74 @@ model Authenticator {
   credentialDeviceType String
   credentialBackedUp   Boolean
   transports           String?
- 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
- 
+  user                 user    @relation(fields: [userId], references: [id], onDelete: Cascade, map: "Authenticator_userId_fkey")
+
   @@id([userId, credentialID])
 }
+
+model foodcategory {
+  id       Int        @id @default(autoincrement())
+  name     String     @unique(map: "FoodCategory_name_key")
+  fooditem fooditem[]
+}
+
+model fooditem {
+  id           Int          @id @default(autoincrement())
+  name         String       @unique
+  image        String
+  price        String
+  itemCategory String
+  foodcategory foodcategory @relation(fields: [itemCategory], references: [name], map: "FoodItem_itemCategory_fkey")
+
+  carts        cart[]
+
+  @@index([itemCategory], map: "FoodItem_itemCategory_fkey")
+}
+
+model session {
+  id           String   @id
+  sessionToken String   @unique(map: "Session_sessionToken_key")
+  userId       String
+  expires      DateTime
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime
+  user         user     @relation(fields: [userId], references: [id], map: "Session_userId_fkey")
+
+  @@index([userId], map: "Session_userId_idx")
+}
+
+model user {
+  id            String          @id
+  name          String?
+  username      String?         @unique(map: "User_username_key")
+  email         String?         @unique(map: "User_email_key")
+  emailVerified DateTime?
+  image         String?
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime
+  password      String?
+  account       account?
+  authenticator authenticator[]
+  cart          cart[]
+  session       session[]
+}
+
+model verificationtoken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@unique([identifier, token], map: "VerificationToken_identifier_token_key")
+}
+
+model cart {
+  id         Int       @id @default(autoincrement())
+  Itemname   String
+  quantity   Int       @default(1)
+  fooditem   fooditem  @relation(fields: [Itemname], references: [name])
+  cartOwner  String
+  user       user      @relation(fields: [cartOwner], references: [email], map: "Cart_cartOwner_fkey")
+
+  @@index([cartOwner], map: "Cart_cartOwner_fkey")
+}
+

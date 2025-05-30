@@ -1,7 +1,12 @@
+import { CircularProgress } from "@mui/material"
 
 const loading = () => {
   return (
-    <div>loading</div>
+    <>
+    <div className="h-[70vh] w-full flex justify-center items-center">
+      <CircularProgress size={35} sx={{color:"black"}}/>
+    </div>
+    </>
   )
 }
 
