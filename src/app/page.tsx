@@ -1,9 +1,10 @@
 import { DesertImage, FastFoodImage, MainCourseImage } from '@/assets';
 import { ThreeDMarquee } from '@/components/ui/3d-marquee';
 import Carousel from '@/components/ui/carousel';
+import { getCurrentUser } from '@/lib/session';
 import Card from '@/Server_Components/Card';
 
-export default function Home() {
+export default async function Home() {
   // ------------------- 3D MARQUEE IMAGES ------------------
 
   const images = [
@@ -103,7 +104,7 @@ export default function Home() {
   return (
     <>
       {/* ------------------------- 3D MARQUEE ------------------------ */}
-      <ThreeDMarquee images={images}  />
+      <ThreeDMarquee images={images} />
       {/* ------------------------ FOOD CATEGORY ----------------------- */}
       <div className='bg-slate-200 pt-10 h-fit pb-20'>
         <h1 className='text-center text-2xl md:text-4xl text-black font-bold mb-10'>

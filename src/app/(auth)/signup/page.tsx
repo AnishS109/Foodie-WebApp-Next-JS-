@@ -1,8 +1,9 @@
+import SignupPage from "@/components/SignUpPage"
 
-const SignUpPage = () => {
+const SignUp_Page = () => {
   return (
-    <div>SignUpPage</div>
+    <div><SignupPage/></div>
   )
 }
 
-export default SignUpPage
+export default SignUp_Page

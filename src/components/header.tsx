@@ -16,6 +16,7 @@ import LoginIcon from '@mui/icons-material/Login';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import LogoutIcon from '@mui/icons-material/Logout';
 import Link from 'next/link';
+import { signOut, useSession } from 'next-auth/react';
 
 const Header_Client = () => {
   // ------------------------- FOR FETCHING PATH URL -------------------------------
@@ -35,6 +36,22 @@ const Header_Client = () => {
     year: 'numeric',
   });
 
+  // ------------------- CHEKING USER LOGGED IN ------------------------
+
+  const { data: session } = useSession();
+  const email = session?.user?.email;
+
+  // ----------------------- HANDLE LOGOUT ---------------------------
+
+  const handleLogout = async () => {
+    await signOut({ callbackUrl: '/' }); 
+  };
+
+  // -------------- HIDING HEADER FROM LOGIN AND SIGNUP PAGE ---------------
+
+  if (activePage == '/login') return null;
+  if (activePage == '/signup') return null;
+
   return (
     <>
       <AppBar sx={{ position: 'sticky', boxShadow: 1 }}>
@@ -48,14 +65,14 @@ const Header_Client = () => {
           }}
         >
           {/* ------------------------ LOGO AND TITLE ----------------------- */}
-          <Link href={"/"}>
-          <div className='flex items-center cursor-pointer'>
-            <Image height={70} src={LogoImage} alt='Foodie Logo' />
+          <Link href={'/'}>
+            <div className='flex items-center cursor-pointer'>
+              <Image height={70} src={LogoImage} alt='Foodie Logo' />
 
-            <p className='text-xl sm:text-2xl md:text-3xl sm:inline-block text-nowrap font-bold tracking-tight'>
-              <span className='text-yellow-500'>F</span>oodie
-            </p>
-          </div>
+              <p className='text-xl sm:text-2xl md:text-3xl sm:inline-block text-nowrap font-bold tracking-tight'>
+                <span className='text-yellow-500'>F</span>oodie
+              </p>
+            </div>
           </Link>
 
           {/* ------------------------- MENU button FOR MOBILE VIEW --------------------- */}
@@ -77,49 +94,75 @@ const Header_Client = () => {
             <div className='flex justify-between items-center md:gap-10'>
               <Link href={'/'}>
                 <div
-                  className={` text-nowrap ${activePage === "/" ? "text-yellow-500" : "text-white"} text-[17px] font-bold border-none transition-all btn-line-animation cursor-pointer`}
+                  className={` text-nowrap ${
+                    activePage === '/' ? 'text-yellow-500' : 'text-white'
+                  } text-[17px] font-bold border-none transition-all btn-line-animation cursor-pointer`}
                 >
                   Home
                 </div>
               </Link>
               <Link href={'/about'}>
                 <div
-                  className={` ${activePage === "/about" ? "text-yellow-500" : "text-white"} text-nowrap text-[17px] font-bold border-none transition-all btn-line-animation  cursor-pointer`}
+                  className={` ${
+                    activePage === '/about' ? 'text-yellow-500' : 'text-white'
+                  } text-nowrap text-[17px] font-bold border-none transition-all btn-line-animation  cursor-pointer`}
                 >
                   About
                 </div>
               </Link>
               <Link href={'/contact'}>
                 <div
-                  className={` ${activePage === "/contact" ? "text-yellow-500" : "text-white"} text-nowrap text-[17px] font-bold border-none transition-all btn-line-animation  cursor-pointer`}
+                  className={` ${
+                    activePage === '/contact' ? 'text-yellow-500' : 'text-white'
+                  } text-nowrap text-[17px] font-bold border-none transition-all btn-line-animation  cursor-pointer`}
                 >
                   Contact
                 </div>
               </Link>
             </div>
             {/* ------------------------- LOGIN SIGNUP button -------------------------- */}
-            <div className='flex gap-4'>
+            <div className={`${email ? 'hidden' : 'block'} flex gap-4`}>
               <Link href={'/login'}>
-                <button className={`${activePage === "/login" ? "text-yellow-500 border-yellow-500 border-1" : "text-white"} font-bold text-lg cursor-pointer border-white border-1 px-3 py-1 rounded-full hover:text-black hover:bg-white transition-all`}>
+                <button
+                  className={`${
+                    activePage === '/login'
+                      ? 'text-yellow-500 border-yellow-500 border-1'
+                      : 'text-white'
+                  } font-bold text-lg cursor-pointer border-white border-1 px-3 py-1 rounded-full hover:text-black hover:bg-white transition-all`}
+                >
                   Login
                 </button>
               </Link>
 
               <Link href={'/signup'}>
-                <button className={`${activePage === "/signup" ? "text-yellow-500 border-yellow-500 border-1" : "text-white"} font-bold text-lg cursor-pointer border-white border-1 px-3 py-1 rounded-full hover:text-black hover:bg-white transition-all`}>
+                <button
+                  className={`${
+                    activePage === '/signup'
+                      ? 'text-yellow-500 border-yellow-500 border-1'
+                      : 'text-white'
+                  } font-bold text-lg cursor-pointer border-white border-1 px-3 py-1 rounded-full hover:text-black hover:bg-white transition-all`}
+                >
                   Sing Up
                 </button>
               </Link>
             </div>
             {/* -------------------------- LOGOUT AND CART button ------------------------- */}
-            {/* <div className='flex gap-4'>
-              <button className='font-bold text-lg cursor-pointer border-white border-1 px-3 py-1 rounded-full hover:text-black hover:bg-white transition-all'>
-                Cart <span><ShoppingCartIcon/></span>
-              </button>
-              <button className='font-bold text-lg cursor-pointer border-white border-1 px-3 py-1 rounded-full hover:text-black hover:bg-white transition-all'>
+            <div className={`${!email ? 'hidden' : 'block'} flex gap-4`}>
+              <Link href={'/cart'}>
+                <button className='font-bold text-lg cursor-pointer border-white border-1 px-3 py-1 rounded-full hover:text-black hover:bg-white transition-all'>
+                  Cart{' '}
+                  <span>
+                    <ShoppingCartIcon />
+                  </span>
+                </button>
+              </Link>
+              <button
+                onClick={handleLogout}
+                className='font-bold text-lg cursor-pointer border-white border-1 px-3 py-1 rounded-full hover:text-black hover:bg-white transition-all'
+              >
                 Logout
               </button>
-            </div> */}
+            </div>
           </div>
         </Toolbar>
       </AppBar>
@@ -204,7 +247,7 @@ const Header_Client = () => {
           </Link>
           {/* --------------------------- LOGIN AND SIGNUP BUTTON --------------------------- */}
 
-          <Link href={'/login'}>
+          <Link href={'/login'} className={`${email ? 'hidden' : 'block'}`}>
             <button
               className={`mt-10 font-bold px-3 py-1 shadow-none w-full flex justify-center items-center gap-1 pr-[68px] text-[15px] hover:rounded-[20px] rounded-[20px] ${
                 activePage === '/none/anish' || activePage === '/none/anish'
@@ -219,7 +262,7 @@ const Header_Client = () => {
             </button>
           </Link>
 
-          <Link href={'/signup'}>
+          <Link href={'/signup'} className={`${email ? 'hidden' : 'block'}`}>
             <button
               className={` font-bold px-3 py-1 shadow-none w-full flex justify-center items-center gap-1 pr-[68px] text-[15px] hover:rounded-[20px] rounded-[20px] ${
                 activePage === '/none/anish' || activePage === '/none/anish'
@@ -236,7 +279,7 @@ const Header_Client = () => {
 
           {/* ------------------------------- CART AND LOGOUT BUTTON ------------------------ */}
 
-          {/* <Link href={'/cart'}>
+          <Link href={'/cart'} className={`${!email ? 'hidden' : 'block'}`}>
             <button
               className={` font-bold px-3 py-1 shadow-none w-full flex justify-center items-center gap-1 pr-[68px] text-[15px] hover:rounded-[20px] rounded-[20px] ${
                 activePage === '/none/anish' || activePage === '/none/anish'
@@ -252,7 +295,10 @@ const Header_Client = () => {
           </Link>
 
           <button
-            className={` font-bold px-3 py-1 shadow-none w-full flex justify-center items-center gap-1 pr-[68px] text-[15px] hover:rounded-[20px] rounded-[20px] ${
+            onClick={handleLogout}
+            className={`${
+              !email ? 'hidden' : 'block'
+            } font-bold px-3 py-1 shadow-none w-full flex justify-center items-center gap-1 pr-[68px] text-[15px] hover:rounded-[20px] rounded-[20px] ${
               activePage === '/none/anish' || activePage === '/none/anish'
                 ? 'bg-white text-black'
                 : ' text-white'
@@ -262,7 +308,7 @@ const Header_Client = () => {
               <LogoutIcon />
             </span>
             <span>Logout</span>
-          </button> */}
+          </button>
         </div>
 
         {/* -------------------------------------- DATE SECTION ---------------------------- */}
