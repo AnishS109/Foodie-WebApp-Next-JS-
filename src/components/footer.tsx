@@ -23,16 +23,16 @@ const Footer_Client = () => {
 
         {/* Social Media Icons */}
         <div className="flex gap-4">
-          <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">
+          <a target="_blank" rel="noopener noreferrer" className="hover:text-primary cursor-pointer transition-colors">
             <Facebook sx={{ fontSize: 28 }} />
           </a>
-          <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">
+          <a target="_blank" rel="noopener noreferrer" className="hover:text-primary cursor-pointer transition-colors">
             <Instagram sx={{ fontSize: 28 }} />
           </a>
-          <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">
+          <a target="_blank" rel="noopener noreferrer" className="hover:text-primary cursor-pointer transition-colors">
             <Twitter sx={{ fontSize: 28 }} />
           </a>
-          <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">
+          <a target="_blank" rel="noopener noreferrer" className="hover:text-primary cursor-pointer transition-colors">
             <LinkedIn sx={{ fontSize: 28 }} />
           </a>
         </div>

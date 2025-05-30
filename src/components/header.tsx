@@ -48,13 +48,15 @@ const Header_Client = () => {
           }}
         >
           {/* ------------------------ LOGO AND TITLE ----------------------- */}
-          <div className='flex items-center'>
+          <Link href={"/"}>
+          <div className='flex items-center cursor-pointer'>
             <Image height={70} src={LogoImage} alt='Foodie Logo' />
 
             <p className='text-xl sm:text-2xl md:text-3xl sm:inline-block text-nowrap font-bold tracking-tight'>
               <span className='text-yellow-500'>F</span>oodie
             </p>
           </div>
+          </Link>
 
           {/* ------------------------- MENU button FOR MOBILE VIEW --------------------- */}
           <button
@@ -75,21 +77,21 @@ const Header_Client = () => {
             <div className='flex justify-between items-center md:gap-10'>
               <Link href={'/'}>
                 <div
-                  className={`text-white text-nowrap text-[17px] font-bold border-none transition-all btn-line-animation cursor-pointer`}
+                  className={` text-nowrap ${activePage === "/" ? "text-yellow-500" : "text-white"} text-[17px] font-bold border-none transition-all btn-line-animation cursor-pointer`}
                 >
                   Home
                 </div>
               </Link>
               <Link href={'/about'}>
                 <div
-                  className={`text-white text-nowrap text-[17px] font-bold border-none transition-all btn-line-animation  cursor-pointer`}
+                  className={` ${activePage === "/about" ? "text-yellow-500" : "text-white"} text-nowrap text-[17px] font-bold border-none transition-all btn-line-animation  cursor-pointer`}
                 >
                   About
                 </div>
               </Link>
               <Link href={'/contact'}>
                 <div
-                  className={`text-white text-nowrap text-[17px] font-bold border-none transition-all btn-line-animation  cursor-pointer`}
+                  className={` ${activePage === "/contact" ? "text-yellow-500" : "text-white"} text-nowrap text-[17px] font-bold border-none transition-all btn-line-animation  cursor-pointer`}
                 >
                   Contact
                 </div>
@@ -98,13 +100,13 @@ const Header_Client = () => {
             {/* ------------------------- LOGIN SIGNUP button -------------------------- */}
             <div className='flex gap-4'>
               <Link href={'/login'}>
-                <button className='font-bold text-lg cursor-pointer border-white border-1 px-3 py-1 rounded-full hover:text-black hover:bg-white transition-all'>
+                <button className={`${activePage === "/login" ? "text-yellow-500 border-yellow-500 border-1" : "text-white"} font-bold text-lg cursor-pointer border-white border-1 px-3 py-1 rounded-full hover:text-black hover:bg-white transition-all`}>
                   Login
                 </button>
               </Link>
 
               <Link href={'/signup'}>
-                <button className='font-bold text-lg cursor-pointer border-white border-1 px-3 py-1 rounded-full hover:text-black hover:bg-white transition-all'>
+                <button className={`${activePage === "/signup" ? "text-yellow-500 border-yellow-500 border-1" : "text-white"} font-bold text-lg cursor-pointer border-white border-1 px-3 py-1 rounded-full hover:text-black hover:bg-white transition-all`}>
                   Sing Up
                 </button>
               </Link>
