@@ -9,7 +9,7 @@ datasource db {
 }
 
 model account {
-  id                       String   @id
+  id                       String   @id @default(uuid())
   userId                   String   @unique(map: "Account_userId_key")
   type                     String
   provider                 String

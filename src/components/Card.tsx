@@ -49,7 +49,7 @@ const Card = ({ data }: { data: CardData }) => {
     };
 
     try {
-      const response = await axios.post('api/cart', datas);
+      const response = await axios.post('/api/cart', datas);
       if (response.status === 200) {
         setMessageModal({
           open: true,
