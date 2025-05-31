@@ -181,7 +181,7 @@ const Header_Client = () => {
             {/* -------------------------- LOGOUT AND CART button ------------------------- */}
             <div className={`${!email ? 'hidden' : 'block'} flex gap-4`}>
               <Link href={'/cart'}>
-                <button className='font-bold text-lg cursor-pointer border-white border-1 px-3 py-1 rounded-full hover:text-black hover:bg-white transition-all'>
+                <button className={`${activePage === "/cart" ? "border-yellow-500 text-yellow-500" : "border-white text-white"} font-bold text-lg cursor-pointer border-1 px-3 py-1 rounded-full hover:text-black hover:bg-white transition-all`}>
                   Cart{' '}
                   <span>
                     <ShoppingCartIcon />

@@ -8,15 +8,15 @@ const FoodSection = async ({ params }: { params: { foodSection: string } }) => {
 
   // ------------ FETCHING FOOD SECTION DATA FROM DATABASE ------------------
 
-  const category = await prisma.foodCategory.findFirst({
+  const category = await prisma.foodcategory.findUnique ({
     where: {
       name: foodSection,
     },
     include: {
-      foodItems: true,
+      fooditem: true,
     },
   });
-  const foodItems = category?.foodItems;
+  const foodItems = category?.fooditem;
 
   return (
     <div className='pt-20 flex flex-wrap justify-center gap-14'>

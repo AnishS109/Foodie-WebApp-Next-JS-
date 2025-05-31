@@ -7,7 +7,7 @@ import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import { useRouter } from 'next/navigation';
 import { signIn } from 'next-auth/react';
 import { FormEvent, useState } from 'react';
-import { CircularProgress } from '@mui/material';
+import { Alert, CircularProgress, Snackbar } from '@mui/material';
 
 interface LoginType {
   email: string;
@@ -75,7 +75,7 @@ const LoginPage = () => {
     }
 
     try {
-      setLoad(true)
+      setLoad(true);
       const response = await signIn('credentials', {
         redirect: false,
         email: datas.email,
@@ -99,7 +99,7 @@ const LoginPage = () => {
         severity: 'error',
       });
     } finally {
-      setLoad(false)
+      setLoad(false);
     }
   };
 
@@ -159,16 +159,16 @@ const LoginPage = () => {
         {/* Login Button */}
         {load ? (
           <div className='flex justify-center'>
-            <CircularProgress size={35} sx={{color:"black"}}/>
+            <CircularProgress size={35} sx={{ color: 'black' }} />
           </div>
         ) : (
-        <button 
-        onClick={handleSubmit}
-        className='w-full bg-gray-700 hover:bg-black cursor-pointer text-white font-semibold py-2 rounded-lg transition'>
-          Login
-        </button>
+          <button
+            onClick={handleSubmit}
+            className='w-full bg-gray-700 hover:bg-black cursor-pointer text-white font-semibold py-2 rounded-lg transition'
+          >
+            Login
+          </button>
         )}
-
 
         <p className='text-center mt-3'>
           Don't have an account?{' '}
@@ -180,6 +180,23 @@ const LoginPage = () => {
           </span>
         </p>
       </div>
+
+      {/* -------------------------- SNACKBAR FOR MESSAGES ------------------------- */}
+
+      <Snackbar
+        open={messageModal.open}
+        autoHideDuration={3000}
+        onClose={() => setMessageModal({ ...messageModal, open: false })}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      >
+        <Alert
+          onClose={() => setMessageModal({ ...messageModal, open: false })}
+          severity={messageModal.severity}
+          sx={{ width: '100%' }}
+        >
+          <b>{messageModal.message}</b>
+        </Alert>
+      </Snackbar>
     </div>
   );
 };
